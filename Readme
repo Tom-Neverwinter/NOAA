@@ -1,0 +1,226 @@
+# Initial installation and configuration
+------------------------------------------------------------------------------------------------------------------------
+
+## Raspberry PI operating system
+I'm using Raspbian (stretch NOT compatible) as it have full support for Raspberry PI, simple package manager and it's pretty stable I'm using this; http://downloads.raspberrypi.org/raspbian/images/raspbian-2017-07-05/ (needs alsamixer)
+
+```
+sudo passwd root
+```
+ (here because I'm lazy, copy pasta ftw)
+
+```
+sudo raspi-config 
+```
+( Interfacing Options) enable ssh
+
+## Required packages and software
+
+```
+sudo apt-get update
+```
+
+### WXToIMG for ARM
+
+```
+sudo apt-get install predict python-setuptools ntp cmake libusb-1.0 git sox at nginx
+```
+
+------------------------------------------------------------------------------------------------------------------------
+
+## Install rtl_sdr
+
+```
+sudo vi /etc/modprobe.d/rtlsdr.conf
+```
+
+copy:
+
+```
+blacklist dvb_usb_rtl28xxu
+blacklist rtl2832
+blacklist rtl2830
+```
+
+esc Shift-z-z
+
+------------------------------------------------------------------------------------------------------------------------
+
+clone rlt-sdr git repo:
+
+```
+cd /tmp/
+git clone https://github.com/osmocom/rtl-sdr
+cd rtl-sdr/
+mkdir build
+cd build
+cmake ../ -DINSTALL_UDEV_RULES=ON -DDETACH_KERNEL_DRIVER=ON
+make
+sudo make install
+sudo ldconfig
+cd /tmp/
+sudo cp ./rtl-sdr/rtl-sdr.rules /etc/udev/rules.d/
+```
+
+------------------------------------------------------------------------------------------------------------------------
+
+## Install WXToIMG
+
+```
+cd ~
+wget https://wxtoimgrestored.xyz/beta/wxtoimg-armhf-2.11.2-beta.deb
+sudo dpkg -i wxtoimg-armhf-2.11.2-beta.deb
+```
+
+------------------------------------------------------------------------------------------------------------------------
+
+> REBOOT DEVICE! (changes need to take effect)
+
+```
+rtl_test
+```
+
+confirm radio is working.
+
+------------------------------------------------------------------------------------------------------------------------
+
+set ground position in predict; https://gps-coordinates.org/ (need North and west, enter the non decimal version as it is too stupid to accept negatives)
+
+```
+predict
+```
+
+### wxtoimg must be run once;
+
+```
+wxtoimg
+```
+
+exit, now run
+
+```
+xwxtoimg
+```
+
+set ground position in predict; https://gps-coordinates.org/ (need North and east)
+mess with xwxtoimg settings. remind users to update and enter product code.
+
+2018 Professional Edition Upgrade Key
+Given that the original dev seems to have wanted to make the full version available to everyone before disappearing, I'm putting a valid license key/info here - if someone wants this removed, feel free to get in touch and I'll take it down. 
+
+```
+Full Name: Kevin Schuchmann
+Email Address: your email address 
+Upgrade Key: CGHZ-PP9G-EAJZ-AWKK-NDNX
+```
+
+### install tweepy
+Twitter upload
+
+```
+sudo pip install -U pip 
+```
+(this will uninstall pip and replace it with a version that works).
+
+```
+sudo pip install tweepy
+```
+
+--------------------------------------------------------------------------------------------------------------
+## scripts
+--------------------------------------------------------------------------------------------------------------
+
+```
+cd ~
+git clone https://github.com/Tom-Neverwinter/raspberry-noaa.git
+```
+
+rename noaa.conf to .noaa.conf (odd linux issue) then Move .noaa.conf to your home folder
+```
+sudo mv /home/pi/raspberry-noaa/noaa.conf /home/pi/raspberry-noaa/.noaa.conf
+sudo cp /home/pi/raspberry-noaa/.noaa.conf /root/
+sudo cp /home/pi/raspberry-noaa/.noaa.conf ~/
+```
+
+Set your NOAA_HOME and NOAA_OUTPUT paths???
+
+```
+mkdir /home/pi/weather
+mkdir /home/pi/weather/predict
+
+mv /home/pi/raspberry-noaa/post.py /home/pi/weather/predict
+mv /home/pi/raspberry-noaa/prune.sh /home/pi/weather/predict
+mv /home/pi/raspberry-noaa/receive.sh /home/pi/weather/predict
+mv /home/pi/raspberry-noaa/schedule.sh /home/pi/weather/predict
+mv /home/pi/raspberry-noaa/schedule_sat.sh /home/pi/weather/predict
+mv /home/pi/raspberry-noaa/sun.py /home/pi/weather/predict
+```
+
+if you want to add google drive functionality, edit receive.sh
+https://olivermarshall.net/how-to-upload-a-file-to-google-drive-from-the-command-line/
+
+```
+cd weather/predict/
+chmod +x post.py
+chmod +x prune.sh
+chmod +x receive.sh
+chmod +x schedule.sh
+chmod +x schedule_sat.sh
+chmod +x sun.py
+```
+
+Set your Twitter credentials
+Go to Twitter Developer site and apply for a developer account.
+Set your credentials on post.py
+
+```
+CONSUMER_KEY = ''
+CONSUMER_SECRET = ''
+ACCESS_TOKEN_KEY = ''
+ACCESS_TOKEN_SECRET = ''
+```
+
+Set Nginx vhost
+Copy the nginx.cfg file to `/etc/nginx/conf.d/` folder. Configure your paths then reload nginx
+
+```
+cd /home/pi/raspberry-noaa
+sudo mv nginx.cfg /etc/nginx/conf.d/
+sudo mv /home/pi/raspberry-noaa/index.html /var/www/
+sudo systemctl reload nginx
+```
+
+fstab
+
+First mount ramfs to a folder:
+```
+sudo mkdir /var/ramfs
+sudo mount -t ramfs -o size=100M ramfs /var/ramfs/
+```
+
+Cron the scheduling job
+```
+crontab -e
+```
+
+```
+cat <(crontab -l) <(echo "1 0 * * * /home/pi/raspberry-noaa/schedule.sh") | crontab -
+```
+
+run it!!!
+
+```
+sudo /home/pi/weather/predict/schedule.sh
+```
+
+------------------------------------------------------------------------------------------------------------------------
+I still have not gotten this part to work properly. junk pile and stuff to work on.
+------------------------------------------------------------------------------------------------------------------------
+
+http://voiceoverman.wixsite.com/noaam2/setting-up-ubuntu-
+
+https://github.com/evansgp/raspbian-sdr
+
+https://drive.google.com/drive/folders/1WViWl7iWC1_keWlAQevRP7une2DGdugp
+
+https://do7psl.de/weather-fax-wxtoimg-raspberry-pi-wetterdaten-weewx/
