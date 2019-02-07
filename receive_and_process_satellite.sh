@@ -20,6 +20,10 @@ then
 /usr/local/bin/wxtoimg -m ${3}-map.png -e MCIR $3.wav ${3}.MCIR.png
 /usr/local/bin/wxtoimg -m ${3}-map.png -e MSA $3.wav ${3}.MSA.png
 
+sleep 60
+
+    /home/pi/weathertweeter/weathertweeter.py ${3}.png ${3}
+
 # Delete old satellite image files from www directory
 sudo rm /var/www/html/NOAA/*.*
 
