@@ -18,9 +18,11 @@ for i in `atq | awk '{print $1}'`;do atrm $i;done
 #http://phqfh.co.uk/status.htm (check for changes) 02/06/2019
 #Schedule Satellite Passes:
 
-/home/pi/weather/predict/schedule_satellite.sh "NOAA 19" 137.1000
-/home/pi/weather/predict/schedule_satellite.sh "NOAA 18" 137.9125
 /home/pi/weather/predict/schedule_satellite.sh "NOAA 15" 137.6200
-/home/pi/weather/predict/schedule_satellite.sh "METEOR-M 2" 137.9000
-# Meteor M N2-2 launch delayed to NET June 2019
-# /home/pi/weather/predict/schedule_satellite.sh "METEOR-N 2" xxx.xxxx
+/home/pi/weather/predict/schedule_satellite.sh "NOAA 18" 137.9125
+/home/pi/weather/predict/schedule_satellite.sh "NOAA 19" 137.1000
+#/home/pi/weather/predict/schedule_satellite.sh "Metop-A" 137.1000
+#/home/pi/weather/predict/schedule_satellite.sh "Metop-B"
+#/home/pi/weather/predict/schedule_satellite.sh "Metop-C"
+/home/pi/weather/predict/schedule_satellite.sh "METEOR-M 2" 137.1000
+/home/pi/weather/predict/schedule_satellite.sh "METEOR-N 2" 137.9000
