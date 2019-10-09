@@ -7,9 +7,9 @@ wget -qr https://www.celestrak.com/NORAD/elements/weather.txt -O /home/pi/weathe
 grep "NOAA 15" /home/pi/weather/predict/weather.txt -A 2 > /home/pi/weather/predict/weather.tle
 grep "NOAA 18" /home/pi/weather/predict/weather.txt -A 2 >> /home/pi/weather/predict/weather.tle
 grep "NOAA 19" /home/pi/weather/predict/weather.txt -A 2 >> /home/pi/weather/predict/weather.tle
+#grep "Metop-A" /home/pi/weather/predict/weather.txt -A 2 >> /home/pi/weather/predict/weather.tle
 grep "METEOR-M 2" /home/pi/weather/predict/weather.txt -A 2 >> /home/pi/weather/predict/weather.tle
-# Meteor M N2-2 launch delayed to NET June 2019
-# grep "METEOR-N 2" /home/pi/weather/predict/weather.txt -A 2 >> /home/pi/weather/predict/weather.tle
+grep "METEOR-N 2" /home/pi/weather/predict/weather.txt -A 2 >> /home/pi/weather/predict/weather.tle
 
 #Remove all AT jobs
 
