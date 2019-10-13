@@ -16,7 +16,7 @@ grep "METEOR-N 2" /home/pi/weather/predict/weather.txt -A 2 >> /home/pi/weather/
 
 for i in `atq | awk '{print $1}'`;do atrm $i;done
 
-#http://phqfh.co.uk/status.htm (check for changes) 02/06/2019
+#http://phqfh.co.uk/status.htm (check for changes) Updated: 10/13/2019
 #Schedule Satellite Passes:
 
 /home/pi/weather/predict/schedule_satellite.sh "NOAA 15" 137.6200
